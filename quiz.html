@@ -381,7 +381,7 @@
     </div>
     <div class="terminal-body" id="term-body">
       <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=1 --total=10</span></div>
-      <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span id="term-score" style="color:var(--yellow)">0/10</span></div>
+      <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span style="color:var(--yellow)">0/0</span></div>
       <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
     </div>
   </div>
@@ -502,7 +502,6 @@ function renderQuestion() {
   document.getElementById('q-badge').textContent = `DOMANDA ${String(n).padStart(2,'0')}`;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('term-title').textContent = `quiz.sh · domanda ${n}`;
-  document.getElementById('term-score').textContent = `${right}/${current}`;
   document.getElementById('term-body').innerHTML = `
     <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=${n} --total=10</span></div>
     <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span style="color:var(--yellow)">${right}/${current}</span></div>
