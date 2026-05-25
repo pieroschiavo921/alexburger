@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quiz di Laurea 🎓</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #4D9FFF;
+    --blue-dim: #2c7fe0;
+    --blue-glow: rgba(77,159,255,0.15);
+    --yellow: #FFD93D;
+    --cyan: #00D4FF;
+    --purple: #C084FC;
+    --green: #4ade80;
+    --red: #ff6b6b;
+    --bg: #0f0b1a;
+    --surface: #17112a;
+    --surface2: #1e1635;
+    --border: #2a1f45;
+    --text: #f0eaff;
+    --muted: #7a6a9a;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Fredoka One', cursive;
+    --body: 'Nunito', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(192,132,252,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192,132,252,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 3rem;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(15,11,26,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .topbar-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    width: 10%;
+  }
+
+  .score-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .score-pill .s-right { color: var(--green); }
+  .score-pill .s-wrong { color: var(--red); }
+
+  /* TERMINAL STATUS */
+  .terminal-strip {
+    margin: 1.25rem 1.5rem 0;
+    background: #0c0918;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: #130f22;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #27c93f; }
+
+  .terminal-label { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-left: 4px; }
+
+  .terminal-body {
+    padding: 0.75rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.9;
+  }
+
+  .t-prompt { color: var(--purple); }
+  .t-cmd { color: var(--cyan); }
+  .t-dim { color: var(--muted); }
+  .t-q { color: var(--blue); }
+  .t-warn { color: var(--yellow); }
+
+  .cursor {
+    display: inline-block; width: 7px; height: 12px;
+    background: var(--blue); vertical-align: middle;
+    animation: blink 1s step-end infinite; margin-left: 2px;
+  }
+  @keyframes blink { 50%{opacity:0} }
+
+  /* QUESTION CARD */
+  .q-wrap { padding: 1.5rem 1.5rem 0; }
+
+  .q-num-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .q-num-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #0c0918;
+    background: var(--yellow);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .q-num-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .q-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--cyan));
+  }
+
+  .q-text {
+    padding: 1.25rem 1.25rem 1rem;
+    font-family: var(--display);
+    font-size: 18px;
+    line-height: 1.35;
+    color: var(--text);
+  }
+
+  .q-answers {
+    padding: 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ans-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-family: var(--body);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ans-btn:active { transform: scale(0.98); }
+
+  .ans-btn.hover-state {
+    border-color: var(--blue);
+    background: var(--blue-glow);
+  }
+
+  .ans-btn.correct {
+    border-color: var(--green);
+    background: rgba(74,222,128,0.12);
+    color: var(--green);
+  }
+
+  .ans-btn.wrong {
+    border-color: var(--red);
+    background: rgba(255,107,107,0.12);
+    color: var(--red);
+  }
+
+  .ans-btn.disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .ans-letter {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .ans-btn.correct .ans-letter { background: rgba(74,222,128,0.25); }
+  .ans-btn.wrong .ans-letter { background: rgba(255,107,107,0.25); }
+
+  .ans-icon {
+    margin-left: auto;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* FEEDBACK */
+  .feedback-wrap {
+    margin: 0.75rem 1.5rem 0;
+    display: none;
+  }
+
+  .feedback-wrap.visible { display: block; }
+
+  .feedback-box {
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .feedback-box.correct-fb {
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.3);
+    color: #86efac;
+  }
+
+  .feedback-box.wrong-fb {
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.3);
+    color: #fca5a5;
+  }
+
+  .fb-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+  /* NEXT BUTTON */
+  .next-wrap {
+    padding: 1.25rem 1.5rem 0;
+    display: none;
+  }
+
+  .next-wrap.visible { display: block; }
+
+  .next-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: var(--display);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--blue-dim);
+    transition: transform 0.12s, box-shadow 0.12s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .next-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .next-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--blue-dim); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <span class="topbar-label" id="top-label">DOM. 1/10</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    <div class="score-pill">
+      <span class="s-right" id="score-right">✓0</span>
+      &nbsp;
+      <span class="s-wrong" id="score-wrong">✗0</span>
+    </div>
+  </div>
+
+  <div class="terminal-strip">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label" id="term-title">quiz.sh · domanda 1</span>
+    </div>
+    <div class="terminal-body" id="term-body">
+      <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=1 --total=10</span></div>
+      <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span id="term-score" style="color:var(--yellow)">0/10</span></div>
+      <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <div class="q-wrap">
+    <div class="q-num-row">
+      <span class="q-num-badge" id="q-badge">DOMANDA 01</span>
+      <div class="q-num-line"></div>
+    </div>
+    <div class="q-card">
+      <div class="q-text" id="q-text">Caricamento domanda...</div>
+      <div class="q-answers" id="q-answers"></div>
+    </div>
+  </div>
+
+  <div class="feedback-wrap" id="feedback-wrap">
+    <div class="feedback-box" id="feedback-box">
+      <span class="fb-icon" id="fb-icon"></span>
+      <span id="fb-text"></span>
+    </div>
+  </div>
+
+  <div class="next-wrap" id="next-wrap">
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima domanda →</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "📝 DOMANDA 1 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 0,
+    feedback_ok: "Esatto! 🎉 Commento opzionale sulla risposta corretta.",
+    feedback_ko: "Peccato! La risposta giusta era la A. Aggiungi una spiegazione qui."
+  },
+  {
+    q: "📝 DOMANDA 2 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 1,
+    feedback_ok: "Esatto! 🎉 Commento opzionale sulla risposta corretta.",
+    feedback_ko: "Peccato! La risposta giusta era la B."
+  },
+  {
+    q: "📝 DOMANDA 3 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 2,
+    feedback_ok: "Esatto! 🎉 Commento opzionale sulla risposta corretta.",
+    feedback_ko: "Peccato! La risposta giusta era la C."
+  },
+  {
+    q: "📝 DOMANDA 4 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 0,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la A."
+  },
+  {
+    q: "📝 DOMANDA 5 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 3,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la D."
+  },
+  {
+    q: "📝 DOMANDA 6 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 1,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la B."
+  },
+  {
+    q: "📝 DOMANDA 7 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 2,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la C."
+  },
+  {
+    q: "📝 DOMANDA 8 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 0,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la A."
+  },
+  {
+    q: "📝 DOMANDA 9 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 3,
+    feedback_ok: "Esatto! 🎉",
+    feedback_ko: "Peccato! La risposta giusta era la D."
+  },
+  {
+    q: "📝 DOMANDA 10 — Sostituisci con la tua domanda qui",
+    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
+    correct: 1,
+    feedback_ok: "Esatto! 🎉 Ultima domanda — ce l'hai fatta!",
+    feedback_ko: "Peccato! La risposta giusta era la B. Vediamo comunque cosa hai vinto..."
+  }
+];
+
+let current = 0;
+let right = 0;
+let wrong = 0;
+const LETTERS = ['A','B','C','D'];
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const n = current + 1;
+
+  document.getElementById('top-label').textContent = `DOM. ${n}/10`;
+  document.getElementById('progress-fill').style.width = `${(n / 10) * 100}%`;
+  document.getElementById('score-right').textContent = `✓${right}`;
+  document.getElementById('score-wrong').textContent = `✗${wrong}`;
+  document.getElementById('q-badge').textContent = `DOMANDA ${String(n).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('term-title').textContent = `quiz.sh · domanda ${n}`;
+  document.getElementById('term-score').textContent = `${right}/${current}`;
+  document.getElementById('term-body').innerHTML = `
+    <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=${n} --total=10</span></div>
+    <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span style="color:var(--yellow)">${right}/${current}</span></div>
+    <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
+  `;
+
+  const answersEl = document.getElementById('q-answers');
+  answersEl.innerHTML = '';
+  q.answers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.innerHTML = `<span class="ans-letter">${LETTERS[i]}</span><span>${ans}</span>`;
+    btn.addEventListener('touchstart', () => btn.classList.add('hover-state'), {passive:true});
+    btn.addEventListener('touchend', () => btn.classList.remove('hover-state'), {passive:true});
+    btn.addEventListener('click', () => selectAnswer(i));
+    answersEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback-wrap').classList.remove('visible');
+  document.getElementById('next-wrap').classList.remove('visible');
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = current < 9 ? 'Prossima domanda →' : 'Vedi il tuo premio! 🎁';
+}
+
+function selectAnswer(idx) {
+  const q = QUESTIONS[current];
+  const buttons = document.querySelectorAll('.ans-btn');
+  const isCorrect = idx === q.correct;
+
+  buttons.forEach((btn, i) => {
+    btn.onclick = null;
+    btn.style.pointerEvents = 'none';
+    if (i === q.correct) { btn.classList.add('correct'); btn.innerHTML += '<span class="ans-icon">✓</span>'; }
+    else if (i === idx && !isCorrect) { btn.classList.add('wrong'); btn.innerHTML += '<span class="ans-icon">✗</span>'; }
+    else { btn.classList.add('disabled'); }
+  });
+
+  if (isCorrect) right++; else wrong++;
+
+  document.getElementById('score-right').textContent = `✓${right}`;
+  document.getElementById('score-wrong').textContent = `✗${wrong}`;
+
+  const fbWrap = document.getElementById('feedback-wrap');
+  const fbBox = document.getElementById('feedback-box');
+  const fbIcon = document.getElementById('fb-icon');
+  const fbText = document.getElementById('fb-text');
+
+  fbBox.className = 'feedback-box ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  fbIcon.textContent = isCorrect ? '🎉' : '💀';
+  fbText.textContent = isCorrect ? q.feedback_ok : q.feedback_ko;
+  fbWrap.classList.add('visible');
+
+  document.getElementById('next-wrap').classList.add('visible');
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= QUESTIONS.length) {
+    const params = new URLSearchParams({ right, wrong });
+    window.location.href = `risultato.html?${params.toString()}`;
+  } else {
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
