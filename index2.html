@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quiz di Laurea 🎓</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #4DA3FF;
+    --pink-dim: #2E7DDB;
+    --yellow: #FFD93D;
+    --cyan: #00D4FF;
+    --cyan-dim: #00aacc;
+    --purple: #C084FC;
+    --bg: #0f0b1a;
+    --surface: #17112a;
+    --border: #2a1f45;
+    --text: #f0eaff;
+    --muted: #7a6a9a;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Fredoka One', cursive;
+    --body: 'Nunito', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(192,132,252,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192,132,252,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 2.5rem;
+  }
+
+  .header {
+    padding: 2.5rem 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .header-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 20px;
+    padding: 5px 14px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.06em;
+    animation: pulse-chip 1.6s ease-in-out infinite;
+  }
+
+  .header-chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: blink 1.2s step-end infinite;
+  }
+
+  @keyframes pulse-chip { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  @keyframes blink { 50%{opacity:0} }
+
+  .hero-emoji {
+    font-size: 4.5rem;
+    display: block;
+    margin-bottom: 0.6rem;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 18px rgba(77,163,255,0.5));
+  }
+
+  @keyframes float {
+    0%,100%{transform:translateY(0) rotate(-3deg)}
+    50%{transform:translateY(-10px) rotate(3deg)}
+  }
+
+  .title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 9vw, 2.7rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .title .hi1 { color: var(--pink); text-shadow: 0 0 20px rgba(77,163,255,0.5); }
+  .title .hi2 { color: var(--yellow); text-shadow: 0 0 20px rgba(255,217,61,0.4); }
+
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: 0.2rem;
+  }
+
+  .terminal-strip {
+    margin: 1.5rem 1.5rem 0;
+    background: #0c0918;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #130f22;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #27c93f; }
+
+  .terminal-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+
+  .terminal-body {
+    padding: 1rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 2;
+  }
+
+  .t-prompt { color: var(--purple); }
+  .t-cmd { color: var(--cyan); }
+  .t-ok { color: #4ade80; }
+  .t-warn { color: var(--yellow); }
+  .t-dim { color: var(--muted); }
+  .t-pink { color: var(--pink); }
+
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 13px;
+    background: var(--cyan);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  .section-header {
+    padding: 1.75rem 1.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--pink) 0%, transparent 100%);
+    opacity: 0.35;
+  }
+
+  .section-label {
+    font-family: var(--display);
+    font-size: 19px;
+    color: var(--text);
+  }
+
+  .section-emoji { font-size: 1.2rem; }
+
+  .rules-card {
+    margin: 0 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .rules-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
+  }
+
+  .rules-card-top {
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rules-card-top span { color: var(--purple); }
+
+  .rules-placeholder {
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rule-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .rule-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #0c0918;
+    background: var(--yellow);
+    border-radius: 6px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-weight: 700;
+  }
+
+  .rule-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+
+  .rule-text strong { color: var(--pink); font-weight: 800; }
+
+  .placeholder-hint {
+    border: 2px dashed rgba(192,132,252,0.25);
+    border-radius: 10px;
+    padding: 1.75rem 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    background: rgba(192,132,252,0.04);
+  }
+
+  .prize-card {
+    margin: 1.25rem 1.5rem 0;
+    background: var(--surface);
+    border: 1px solid rgba(255,217,61,0.3);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prize-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--yellow), var(--pink));
+  }
+
+  .prize-icon { font-size: 2.8rem; flex-shrink: 0; }
+
+  .prize-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .prize-name {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+
+  .prize-name span { color: var(--yellow); text-shadow: 0 0 14px rgba(255,217,61,0.4); }
+
+  .prize-sub {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .cta-wrap { margin: 2rem 1.5rem 0; }
+
+  .cta-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    font-family: var(--display);
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.12s;
+    box-shadow: 0 5px 0 var(--pink-dim);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--pink-dim);
+  }
+
+  .cta-sub {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    padding: 0 1.5rem;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="header-chip">QUIZ_LAUREA.exe &nbsp;·&nbsp; IN ESECUZIONE</div>
+    <span class="hero-emoji">🧑‍💻</span>
+    <h1 class="title">Meriti<br><span class="hi1">davvero</span> <span class="hi2">un regalo?</span></h1>
+    <p class="subtitle">// dimostralo, nigga 😏</p>
+  </header>
+
+  <div class="terminal-strip">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label">laurea_quiz.sh</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">./start.sh --mode=festa --vibe=max</span></div>
+      <div><span class="t-dim">Caricamento domande... </span><span class="t-ok">✓ OK</span></div>
+      <div><span class="t-dim">Controllo notti insonni... </span><span class="t-ok">✓ TANTE</span></div>
+      <div><span class="t-dim">Premio configurato... </span><span class="t-warn">★ AMAZON GIFT CARD</span></div>
+      <div><span class="t-dim">Caffè consumati... </span><span class="t-pink">∞ INFINITI</span></div>
+      <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-emoji">📋</span>
+    <span class="section-label">Regole del gioco</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="rules-card">
+    <div class="rules-card-top">
+      <span>REGOLAMENTO</span> · leggi prima di procedere
+    </div>
+    <div class="rules-placeholder">
+
+      <!-- =========================================================
+           SEGNAPOSTO — INSERISCI LE TUE REGOLE QUI SOTTO
+           Copia e incolla i blocchi .rule-item per ogni regola.
+           Poi rimuovi il blocco .placeholder-hint.
+           ========================================================= -->
+
+      <div class="rule-item">
+        <span class="rule-num">01</span>
+        <p class="rule-text"><strong>Regola uno:</strong> ogni risposta corretta/erratta determinerà il valore del buono.</p>
+      </div>
+
+      <div class="rule-item">
+        <span class="rule-num">02</span>
+        <p class="rule-text"><strong>Regola due:</strong> non sono ammessi consigli dagli spettatori.</p>
+      </div>
+
+      <div class="rule-item">
+        <span class="rule-num">03</span>
+        <p class="rule-text"><strong>Regola tre:</strong> rispetta sempre le donne e gli anziani.</p>
+      </div>
+
+      <div class="rule-item">
+        <span class="rule-num">04</span>
+        <p class="rule-text"><strong>Regola quattro:</strong> bione non è un paese.</p>
+      </div>
+     
+    </div>
+  </div>
+
+  <div class="prize-card">
+    <div class="prize-icon">🎁</div>
+    <div>
+      <div class="prize-label">// premio finale</div>
+      <div class="prize-name"><span>Buono Amazon</span></div>
+      <div class="prize-sub">Prenditi tutto ciò che meriti negro 👀</div>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta-btn" onclick="window.location.href='index3.html'">
+      Inizia il Quiz! 🚀
+    </button>
+    <p class="cta-sub">// prosegui · a tuo rischio e pericolo (classica frase che vuole essere simpatica senza successo)</p>
+  </div>
+
+  <footer class="footer">
+    &copy; 2026 · fatto con ❤️ per il laureato in Ingegneria Informatica
+  </footer>
+
+</div>
+</body>
+</html>
