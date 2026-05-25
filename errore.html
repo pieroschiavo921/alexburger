@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Errore di sistema...</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #4D9FFF;
+    --blue-dim: #2c7fe0;
+    --yellow: #FFD93D;
+    --cyan: #00D4FF;
+    --purple: #C084FC;
+    --red: #ff6b6b;
+    --red-dim: #cc4444;
+    --orange: #FF6B35;
+    --bg: #0f0b1a;
+    --surface: #17112a;
+    --surface2: #1e1635;
+    --border: #2a1f45;
+    --text: #f0eaff;
+    --muted: #7a6a9a;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Fredoka One', cursive;
+    --body: 'Nunito', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(192,132,252,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192,132,252,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 3rem;
+  }
+
+  /* GLITCH HEADER */
+  .header {
+    padding: 2.5rem 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .error-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.35);
+    border-radius: 20px;
+    padding: 5px 14px;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.06em;
+    animation: pulse-red 1.2s ease-in-out infinite;
+  }
+
+  .error-chip::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: blink 0.8s step-end infinite;
+  }
+
+  @keyframes pulse-red { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  @keyframes blink { 50%{opacity:0} }
+
+  .hero-emoji {
+    font-size: 4.5rem;
+    display: block;
+    margin-bottom: 0.6rem;
+    animation: shake 0.5s ease-in-out infinite;
+  }
+
+  @keyframes shake {
+    0%,100%{transform:rotate(-4deg)}
+    25%{transform:rotate(4deg) translateX(3px)}
+    50%{transform:rotate(-3deg) translateX(-3px)}
+    75%{transform:rotate(5deg) translateX(2px)}
+  }
+
+  .title {
+    font-family: var(--display);
+    font-size: clamp(1.9rem, 8vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .title .hi-red { color: var(--red); text-shadow: 0 0 20px rgba(255,107,107,0.5); }
+  .title .hi-yellow { color: var(--yellow); text-shadow: 0 0 20px rgba(255,217,61,0.4); }
+
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: 0.25rem;
+  }
+
+  /* TERMINAL */
+  .terminal-strip {
+    margin: 1.25rem 1.5rem 0;
+    background: #0c0918;
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: #130f22;
+    border-bottom: 1px solid rgba(255,107,107,0.2);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #444; }
+
+  .terminal-label { font-family: var(--mono); font-size: 10px; color: var(--red); margin-left: 4px; letter-spacing: 0.05em; }
+
+  .terminal-body {
+    padding: 0.85rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 2;
+  }
+
+  .t-prompt { color: var(--purple); }
+  .t-cmd { color: var(--cyan); }
+  .t-dim { color: var(--muted); }
+  .t-err { color: var(--red); }
+  .t-warn { color: var(--yellow); }
+  .t-ok { color: #4ade80; }
+
+  .cursor {
+    display: inline-block; width: 7px; height: 12px;
+    background: var(--red); vertical-align: middle;
+    animation: blink 1s step-end infinite; margin-left: 2px;
+  }
+
+  /* PHOTO + MESSAGE CARD */
+  .section-header {
+    padding: 1.75rem 1.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+    opacity: 0.35;
+  }
+
+  .section-label {
+    font-family: var(--display);
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .content-card {
+    margin: 0 1.5rem;
+    background: var(--surface);
+    border: 1px solid rgba(255,107,107,0.25);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .content-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--red), var(--orange), var(--yellow));
+  }
+
+  /* ======= SEGNAPOSTO FOTO ======= */
+  .photo-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* --- Per usare una foto reale:
+       sostituisci questo div con:
+       <img src="tua-foto.jpg" style="width:100%;display:block;object-fit:cover;aspect-ratio:4/3;">
+  --- */
+
+  .photo-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,107,107,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,107,0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .photo-icon { font-size: 3rem; position: relative; }
+
+  .photo-hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    position: relative;
+    padding: 0 1rem;
+  }
+
+  .photo-hint span {
+    display: inline-block;
+    border: 1px dashed rgba(255,107,107,0.3);
+    border-radius: 8px;
+    padding: 6px 14px;
+    color: rgba(255,107,107,0.6);
+  }
+
+  /* ======= SEGNAPOSTO MESSAGGIO ======= */
+  .message-area {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+
+  .msg-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .msg-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* --- Modifica il testo qui sotto con il messaggio che vuoi mostrare --- */
+  .msg-text {
+    font-family: var(--display);
+    font-size: 20px;
+    line-height: 1.35;
+    color: var(--text);
+    text-align: center;
+    padding: 0.25rem 0;
+  }
+
+  .msg-text .accent { color: var(--yellow); }
+  .msg-text .accent-red { color: var(--red); }
+
+  .msg-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 0.6rem;
+    line-height: 1.7;
+    border: 1px dashed rgba(255,217,61,0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+
+  /* RETRY BUTTON */
+  .retry-wrap { padding: 1.5rem 1.5rem 0; }
+
+  .retry-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: var(--display);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--red-dim);
+    transition: transform 0.12s, box-shadow 0.12s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .retry-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .retry-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--red-dim); }
+
+  .retry-sub {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .footer {
+    margin-top: 2.5rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    padding: 0 1.5rem;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="error-chip">⚠ ERRORE DI SISTEMA · CODICE 418</div>
+    <span class="hero-emoji">💀</span>
+    <h1 class="title">Qualcosa è<br><span class="hi-red">andato</span> <span class="hi-yellow">storto!</span></h1>
+    <p class="subtitle">// errore inaspettato · riavvio in corso...</p>
+  </header>
+
+  <div class="terminal-strip">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label">⚠ CRASH REPORT · quiz.sh</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">./start.sh --mode=festa</span></div>
+      <div><span class="t-err">FATAL ERROR: </span><span class="t-dim">segmentation fault (core dumped)</span></div>
+      <div><span class="t-warn">WARN: </span><span class="t-dim">cervello utente non trovato</span></div>
+      <div><span class="t-err">EXIT CODE 1 </span><span class="t-dim">· processo terminato 💀</span></div>
+      <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">sudo reboot --force</span></div>
+      <div><span class="t-dim">Riavvio in corso... </span><span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span>😂</span>
+    <span class="section-label">Messaggio di sistema</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="content-card">
+
+    <!-- =====================================================
+         SEGNAPOSTO FOTO
+         Sostituisci questo blocco con:
+         <img src="nome-foto.jpg" style="width:100%;display:block;object-fit:cover;aspect-ratio:4/3;">
+         ===================================================== -->
+    <div class="photo-placeholder">
+      <span class="photo-icon">🖼️</span>
+      <div class="photo-hint">
+        <span>📸 Carica qui la foto<br>imbarazzante del laureato</span>
+      </div>
+    </div>
+
+    <div class="message-area">
+      <div class="msg-label">// messaggio dal sistema</div>
+
+      <!-- =====================================================
+           SEGNAPOSTO MESSAGGIO
+           Modifica il testo tra i tag .msg-text con la tua battuta.
+           Usa <span class="accent"> per evidenziare in giallo
+           o <span class="accent-red"> per evidenziare in rosso.
+           ===================================================== -->
+      <div class="msg-text">
+        Scrivi qui la tua<br>
+        <span class="accent">battuta epica</span> sul<br>
+        <span class="accent-red">laureato 😂</span>
+      </div>
+
+      <!-- Sottotitolo opzionale — modifica o rimuovi -->
+      <div class="msg-sub">
+        // testo secondario opzionale · sostituisci o rimuovi questo blocco
+      </div>
+
+    </div>
+  </div>
+
+  <div class="retry-wrap">
+    <button class="retry-btn" onclick="window.location.href='quiz.html'">
+      Riprova... se ci riesci 🤞
+    </button>
+    <p class="retry-sub">// reindirizza a quiz.html · modifica href se necessario</p>
+  </div>
+
+  <footer class="footer">
+    errore 418: i'm a teapot · ingegneria informatica approved
+  </footer>
+
+</div>
+</body>
+</html>
