@@ -487,9 +487,11 @@ const QUESTIONS = [
 let current = 0;
 let right = 0;
 let wrong = 0;
+let answered = false;
 const LETTERS = ['A','B','C','D'];
 
 function renderQuestion() {
+  answered = false;
   const q = QUESTIONS[current];
   const n = current + 1;
 
@@ -513,7 +515,7 @@ function renderQuestion() {
     const btn = document.createElement('button');
     btn.className = 'ans-btn';
     btn.innerHTML = `<span class="ans-letter">${LETTERS[i]}</span><span>${ans}</span>`;
-    btn.addEventListener('touchstart', () => btn.classList.add('hover-state'), {passive:true});
+    btn.addEventListener('touchstart', () => { if (!answered) btn.classList.add('hover-state'); }, {passive:true});
     btn.addEventListener('touchend', () => btn.classList.remove('hover-state'), {passive:true});
     btn.addEventListener('click', () => selectAnswer(i));
     answersEl.appendChild(btn);
@@ -527,12 +529,14 @@ function renderQuestion() {
 }
 
 function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+
   const q = QUESTIONS[current];
   const buttons = document.querySelectorAll('.ans-btn');
   const isCorrect = idx === q.correct;
 
   buttons.forEach((btn, i) => {
-    btn.onclick = null;
     btn.style.pointerEvents = 'none';
     if (i === q.correct) { btn.classList.add('correct'); btn.innerHTML += '<span class="ans-icon">✓</span>'; }
     else if (i === idx && !isCorrect) { btn.classList.add('wrong'); btn.innerHTML += '<span class="ans-icon">✗</span>'; }
