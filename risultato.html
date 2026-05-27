@@ -308,67 +308,12 @@
   .captcha-msg.err { color: var(--red); }
   .captcha-msg.ok { color: var(--green); }
 
-  /* UPLOAD CONTROLS (admin) */
-  .upload-section {
-    margin: 1rem 1.5rem 0;
-    background: var(--surface2); border: 1px dashed rgba(192,132,252,0.3);
-    border-radius: 14px; padding: 1rem 1.25rem;
+  .esito-img {
+    width: 100%; border-radius: 10px;
+    display: none; /* mostrata via JS se ESITO_IMAGE è impostato */
+    object-fit: cover; max-height: 220px;
+    border: 1px solid var(--border);
   }
-  .upload-title {
-    font-family: var(--mono); font-size: 10px; color: var(--purple);
-    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem;
-  }
-  .upload-row { display: flex; flex-direction: column; gap: 8px; }
-
-  .upload-label {
-    font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 3px;
-    font-family: var(--mono);
-  }
-
-  .upload-input-wrap {
-    display: flex; align-items: center; gap: 8px;
-  }
-
-  .upload-btn {
-    flex-shrink: 0;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 7px 14px;
-    font-family: var(--mono); font-size: 11px; color: var(--purple);
-    cursor: pointer; letter-spacing: 0.04em;
-    transition: border-color 0.15s;
-  }
-  .upload-btn:hover { border-color: var(--purple); }
-
-  .upload-filename {
-    font-family: var(--mono); font-size: 10px; color: var(--muted);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-
-  .upload-hint {
-    font-family: var(--mono); font-size: 10px; color: var(--muted);
-    margin-top: 6px; line-height: 1.6;
-  }
-
-  .captcha-text-input {
-    width: 100%; margin-top: 6px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-    padding: 8px 12px; color: var(--text);
-    font-family: var(--mono); font-size: 12px;
-    outline: none; transition: border-color 0.15s;
-  }
-  .captcha-text-input:focus { border-color: var(--purple); }
-  .captcha-text-input::placeholder { color: var(--muted); }
-
-  .apply-btn {
-    width: 100%; margin-top: 10px;
-    padding: 8px; background: rgba(192,132,252,0.15);
-    border: 1px solid rgba(192,132,252,0.35);
-    border-radius: 8px; color: var(--purple);
-    font-family: var(--mono); font-size: 11px;
-    cursor: pointer; letter-spacing: 0.05em;
-    transition: background 0.15s;
-  }
-  .apply-btn:hover { background: rgba(192,132,252,0.25); }
 
   /* CTA */
   .cta-wrap { margin: 1.5rem 1.5rem 0; }
@@ -453,15 +398,17 @@
     <div class="esito-top"><span>ESITO</span> · analisi risultato</div>
     <div class="esito-body">
 
-      <!-- FASCIA 0–3 -->
+      <!-- FASCIA 0–1 (su 5 domande) -->
       <div class="esito-tier" id="tier-low">
         <div class="esito-emoji-big">💀</div>
-        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi bassi (0-3) -->
+        <!-- ✏️ SEGNAPOSTO: testo per punteggi bassi (0-1 su 5) -->
         <div class="esito-text">
           <span class="acc-red">Zero preparazione.</span><br>
           Scrivi qui la tua battuta<br>per chi ha fatto schifo!
         </div>
-        <div class="esito-sub">// sottotitolo opzionale per punteggio basso — modifica o rimuovi</div>
+        <div class="esito-sub">// sottotitolo opzionale — modifica o rimuovi</div>
+        <!-- Immagine: viene mostrata automaticamente se ESITO_IMAGE è impostato -->
+        <img class="esito-img" alt="esito">
         <div class="prize-reveal">
           <div class="prize-icon">🎁</div>
           <div>
@@ -472,15 +419,16 @@
         </div>
       </div>
 
-      <!-- FASCIA 4–6 -->
+      <!-- FASCIA 2–3 (su 5 domande) -->
       <div class="esito-tier" id="tier-mid">
         <div class="esito-emoji-big">😅</div>
-        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi medi (4-6) -->
+        <!-- ✏️ SEGNAPOSTO: testo per punteggi medi (2-3 su 5) -->
         <div class="esito-text">
           <span class="acc-yellow">Così così...</span><br>
           Scrivi qui la tua battuta<br>per chi ha fatto abbastanza!
         </div>
-        <div class="esito-sub">// sottotitolo opzionale per punteggio medio — modifica o rimuovi</div>
+        <div class="esito-sub">// sottotitolo opzionale — modifica o rimuovi</div>
+        <img class="esito-img" alt="esito">
         <div class="prize-reveal">
           <div class="prize-icon">🎁</div>
           <div>
@@ -491,15 +439,16 @@
         </div>
       </div>
 
-      <!-- FASCIA 7–9 -->
+      <!-- FASCIA 4 (su 5 domande) -->
       <div class="esito-tier" id="tier-high">
         <div class="esito-emoji-big">🔥</div>
-        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi alti (7-9) -->
+        <!-- ✏️ SEGNAPOSTO: testo per punteggio alto (4 su 5) -->
         <div class="esito-text">
           <span class="acc-blue">Ottimo lavoro!</span><br>
           Scrivi qui la tua battuta<br>per chi ha fatto bene!
         </div>
-        <div class="esito-sub">// sottotitolo opzionale per punteggio alto — modifica o rimuovi</div>
+        <div class="esito-sub">// sottotitolo opzionale — modifica o rimuovi</div>
+        <img class="esito-img" alt="esito">
         <div class="prize-reveal">
           <div class="prize-icon">🎁</div>
           <div>
@@ -510,15 +459,16 @@
         </div>
       </div>
 
-      <!-- FASCIA 10/10 -->
+      <!-- FASCIA 5/5 — PERFETTO -->
       <div class="esito-tier" id="tier-perfect">
         <div class="esito-emoji-big">🏆</div>
-        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggio perfetto (10/10) -->
+        <!-- ✏️ SEGNAPOSTO: testo per punteggio perfetto (5 su 5) -->
         <div class="esito-text">
           <span class="acc-yellow">PERFETTO!</span><br>
           Scrivi qui la tua battuta<br>per il punteggio pieno!
         </div>
-        <div class="esito-sub">// sottotitolo opzionale per punteggio perfetto — modifica o rimuovi</div>
+        <div class="esito-sub">// sottotitolo opzionale — modifica o rimuovi</div>
+        <img class="esito-img" alt="esito">
         <div class="prize-reveal">
           <div class="prize-icon">🎁</div>
           <div>
@@ -559,6 +509,8 @@
     </div>
   </div>
 
+
+
   <div class="cta-wrap">
     <button class="cta-btn" id="cta-btn" onclick="claimPrize()" disabled>
       Ottieni il buono! 🎁
@@ -567,31 +519,43 @@
   </div>
 
   <footer class="footer">
-    &copy; 2026 · fatto con ❤️ per il laureato in Ingegneria Informatica
+    &copy; 2025 · fatto con ❤️ per il laureato in Ingegneria Informatica
   </footer>
 </div>
 
 <script>
-// ─── STATO ────────────────────────────────────────────────
-let captchaImage = null;
-let correctCells = new Set([1, 5, 9]); // default — cambia con il pannello (celle 1-12)
+// ═══════════════════════════════════════════════════════════
+//  ✏️  CONFIGURAZIONE — modifica solo questi valori
+// ═══════════════════════════════════════════════════════════
+
+// Immagine captcha: metti il nome del file nella stessa cartella
+const CAPTCHA_IMAGE = 'captcha.jpg'; // ← CAMBIA QUI
+
+// Testo istruzione captcha
+const CAPTCHA_SUBJECT = '"la tua descrizione"'; // ← CAMBIA QUI
+
+// Celle corrette del captcha (1-12, griglia 4×3 sinistra→destra, alto→basso)
+const CORRECT_CELLS = new Set([2, 6, 7, 10]); // ← CAMBIA QUI
+
+// Immagine nell'esito (stessa cartella) — lascia '' per non mostrarne una
+const ESITO_IMAGE = 'esito.jpg'; // ← CAMBIA QUI (o metti '' per nasconderla)
+
+// ═══════════════════════════════════════════════════════════
+
 let selectedCells = new Set();
-let captchaSubject = '"..."';
 let captchaSolved = false;
 
 // ─── PUNTEGGIO DA URL ──────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 const right = parseInt(params.get('right') || '0');
 const wrong = parseInt(params.get('wrong') || '0');
-const total = right + wrong || 10;
+const total = right + wrong || 5;
 const pct = Math.round((right / total) * 100);
 
-// Aggiorna statistiche
 document.getElementById('stat-right').textContent = right;
 document.getElementById('stat-wrong').textContent = wrong;
 document.getElementById('stat-pct').textContent = pct + '%';
 
-// Terminale
 document.getElementById('term-body').innerHTML = `
   <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">./calcola_premio.sh --right=${right} --total=${total}</span></div>
   <div><span class="t-dim">Risposte corrette: </span><span class="t-ok">${right}/${total}</span></div>
@@ -600,19 +564,31 @@ document.getElementById('term-body').innerHTML = `
   <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
 `;
 
-// Mostra fascia corretta
+// ─── FASCE PUNTEGGIO (su 5 domande) ───────────────────────
+// tier-low:     0–1  risposte giuste
+// tier-mid:     2–3
+// tier-high:    4
+// tier-perfect: 5/5
 function showTier() {
   ['tier-low','tier-mid','tier-high','tier-perfect'].forEach(id =>
     document.getElementById(id).classList.remove('active')
   );
   let tier;
-  if (right === 10)       tier = 'tier-perfect';
-  else if (right >= 7)    tier = 'tier-high';
-  else if (right >= 4)    tier = 'tier-mid';
-  else                    tier = 'tier-low';
+  if (right === 5)       tier = 'tier-perfect';
+  else if (right >= 4)   tier = 'tier-high';
+  else if (right >= 2)   tier = 'tier-mid';
+  else                   tier = 'tier-low';
   document.getElementById(tier).classList.add('active');
 }
 showTier();
+
+// ─── IMMAGINE ESITO ────────────────────────────────────────
+if (ESITO_IMAGE) {
+  document.querySelectorAll('.esito-img').forEach(el => {
+    el.src = ESITO_IMAGE;
+    el.style.display = 'block';
+  });
+}
 
 // ─── CAPTCHA ────────────────────────────────────────────────
 function buildGrid() {
@@ -626,24 +602,18 @@ function buildGrid() {
 
   for (let i = 1; i <= 12; i++) {
     const cell = document.createElement('div');
-    cell.className = 'captcha-cell' + (captchaImage ? '' : ' no-img');
+    cell.className = 'captcha-cell';
     cell.dataset.idx = i;
-
-    if (captchaImage) {
-      const col = (i - 1) % 4;          // 4 colonne
-      const row = Math.floor((i - 1) / 4); // 3 righe
-      cell.style.backgroundImage = `url(${captchaImage})`;
-      cell.style.backgroundSize = '400% 300%';
-      cell.style.backgroundPosition = `${col * (100/3)}% ${row * 50}%`;
-    } else {
-      cell.innerHTML = `<span class="cell-placeholder">${i}</span>`;
-    }
-
+    const col = (i - 1) % 4;
+    const row = Math.floor((i - 1) / 4);
+    cell.style.backgroundImage = `url(${CAPTCHA_IMAGE})`;
+    cell.style.backgroundSize = '400% 300%';
+    cell.style.backgroundPosition = `${col * (100/3)}% ${row * 50}%`;
     cell.addEventListener('click', () => toggleCell(cell, i));
     grid.appendChild(cell);
   }
 
-  document.getElementById('captcha-subject').textContent = captchaSubject;
+  document.getElementById('captcha-subject').textContent = CAPTCHA_SUBJECT;
 }
 
 function toggleCell(cell, idx) {
@@ -659,8 +629,8 @@ function toggleCell(cell, idx) {
 }
 
 function checkCaptcha() {
-  const sel = [...selectedCells].sort().join(',');
-  const cor = [...correctCells].sort().join(',');
+  const sel = [...selectedCells].sort((a,b)=>a-b).join(',');
+  const cor = [...CORRECT_CELLS].sort((a,b)=>a-b).join(',');
   if (sel === cor) {
     captchaSolved = true;
     updateCaptchaMsg('✓ verifica superata!', 'ok');
@@ -673,18 +643,19 @@ function checkCaptcha() {
   }
 }
 
-
-function resetCaptcha() {
-  buildGrid();
+function updateCaptchaMsg(text, type) {
+  const el = document.getElementById('captcha-msg');
+  el.textContent = text;
+  el.className = 'captcha-msg' + (type ? ' ' + type : '');
 }
 
+function resetCaptcha() { buildGrid(); }
 
 function claimPrize() {
   if (!captchaSolved) return;
   alert('🎁 Hai superato il captcha! Parla con chi ti ha mandato il link per ritirare il tuo buono.');
 }
 
-// ─── INIT ──────────────────────────────────────────────────
 buildGrid();
 </script>
 </body>
