@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Risultato Quiz 🎁</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #4D9FFF;
+    --blue-dim: #2c7fe0;
+    --blue-glow: rgba(77,159,255,0.15);
+    --yellow: #FFD93D;
+    --cyan: #00D4FF;
+    --purple: #C084FC;
+    --green: #4ade80;
+    --red: #ff6b6b;
+    --bg: #0f0b1a;
+    --surface: #17112a;
+    --surface2: #1e1635;
+    --border: #2a1f45;
+    --text: #f0eaff;
+    --muted: #7a6a9a;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Fredoka One', cursive;
+    --body: 'Nunito', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none; z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(192,132,252,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192,132,252,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 430px; margin: 0 auto;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    padding: 0 0 3rem;
+  }
+
+  /* HEADER */
+  .header { padding: 2.5rem 1.5rem 1rem; text-align: center; }
+
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--cyan);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 20px; padding: 5px 14px;
+    margin-bottom: 1.25rem; letter-spacing: 0.06em;
+    animation: pulse-chip 1.6s ease-in-out infinite;
+  }
+  .status-chip::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan); animation: blink 1.2s step-end infinite;
+  }
+  @keyframes pulse-chip { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  @keyframes blink { 50%{opacity:0} }
+
+  .hero-emoji {
+    font-size: 4.5rem; display: block; margin-bottom: 0.6rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 9vw, 2.7rem);
+    line-height: 1.1; margin-bottom: 0.4rem;
+  }
+  .title .hi1 { color: var(--blue); text-shadow: 0 0 20px rgba(77,159,255,0.5); }
+  .title .hi2 { color: var(--yellow); text-shadow: 0 0 20px rgba(255,217,61,0.4); }
+
+  .subtitle { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
+  /* TERMINAL */
+  .terminal-strip {
+    margin: 1.25rem 1.5rem 0;
+    background: #0c0918;
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .terminal-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 12px; background: #130f22;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r{background:#ff5f56} .dot-y{background:#ffbd2e} .dot-g{background:#27c93f}
+  .terminal-label { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-left: 4px; }
+  .terminal-body { padding: 0.85rem 1.25rem; font-family: var(--mono); font-size: 11px; line-height: 2; }
+  .t-prompt{color:var(--purple)} .t-cmd{color:var(--cyan)} .t-dim{color:var(--muted)}
+  .t-ok{color:var(--green)} .t-warn{color:var(--yellow)} .t-blue{color:var(--blue)}
+  .cursor { display:inline-block;width:7px;height:12px;background:var(--blue);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px; }
+
+  /* SCORE CARD */
+  .score-card {
+    margin: 1.25rem 1.5rem 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; position: relative;
+  }
+  .score-card::before {
+    content:''; position:absolute; top:0;left:0;right:0;height:2px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--cyan));
+  }
+  .score-top {
+    padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em;
+  }
+  .score-top span { color: var(--purple); }
+  .score-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    padding: 1.25rem; gap: 0.75rem;
+  }
+  .score-stat {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 0.85rem 0.5rem; text-align: center;
+  }
+  .score-num { font-family: var(--display); font-size: 2rem; line-height: 1; }
+  .score-num.green { color: var(--green); }
+  .score-num.red { color: var(--red); }
+  .score-num.blue { color: var(--blue); }
+  .score-lbl { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; }
+
+  /* ESITO TEXT CARD */
+  .section-header {
+    padding: 1.75rem 1.5rem 0.75rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-line { flex:1; height:1px; background:linear-gradient(90deg, var(--blue) 0%, transparent 100%); opacity:0.3; }
+  .section-label { font-family: var(--display); font-size: 19px; color: var(--text); }
+
+  .esito-card {
+    margin: 0 1.5rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    position: relative;
+  }
+  .esito-card::before {
+    content:''; position:absolute; top:0;left:0;right:0;height:2px;
+    background: linear-gradient(90deg, var(--yellow), var(--blue));
+  }
+  .esito-top {
+    padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em;
+  }
+  .esito-top span { color: var(--yellow); }
+
+  /* ======= SEGNAPOSTO TESTO ESITO ======= */
+  .esito-body {
+    padding: 1.25rem 1.25rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+
+  /*
+    Per ogni fascia di punteggio c'è un blocco .esito-tier con id corrispondente.
+    Modifica il testo dentro .esito-text per ogni fascia.
+    Le fasce sono: tier-low (0-3), tier-mid (4-6), tier-high (7-9), tier-perfect (10/10).
+    Solo quello corretto viene mostrato via JS.
+  */
+
+  .esito-tier { display: none; flex-direction: column; gap: 0.75rem; }
+  .esito-tier.active { display: flex; }
+
+  .esito-emoji-big { font-size: 3rem; text-align: center; }
+
+  .esito-text {
+    font-family: var(--display); font-size: 20px;
+    line-height: 1.35; color: var(--text); text-align: center;
+  }
+  .esito-text .acc-blue { color: var(--blue); }
+  .esito-text .acc-yellow { color: var(--yellow); }
+  .esito-text .acc-red { color: var(--red); }
+
+  .esito-sub {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-align: center; line-height: 1.6;
+    border: 1px dashed rgba(77,159,255,0.2);
+    border-radius: 10px; padding: 10px 14px;
+    background: var(--surface2);
+    font-family: var(--body);
+  }
+
+  .prize-reveal {
+    background: var(--surface2);
+    border: 1.5px solid rgba(255,217,61,0.35);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .prize-icon { font-size: 2.2rem; flex-shrink: 0; }
+  .prize-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 3px; }
+  .prize-val { font-family: var(--display); font-size: 22px; color: var(--yellow); }
+  .prize-sub { font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+
+  /* CAPTCHA */
+  .captcha-section {
+    margin: 1.25rem 1.5rem 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; position: relative;
+  }
+  .captcha-section::before {
+    content:''; position:absolute; top:0;left:0;right:0;height:2px;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+  }
+  .captcha-top {
+    padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .captcha-top-left { display: flex; align-items: center; gap: 8px; }
+  .captcha-logo {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900; color: white; font-family: var(--mono);
+    flex-shrink: 0;
+  }
+  .captcha-brand { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+  .captcha-brand span { color: var(--blue); }
+
+  .captcha-instruction {
+    padding: 0.85rem 1.25rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--body); font-size: 13px; font-weight: 700; color: var(--text);
+    line-height: 1.4;
+  }
+  .captcha-instruction span { color: var(--cyan); }
+
+  /* CAPTCHA GRID */
+  .captcha-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 3px; padding: 3px; background: var(--border);
+  }
+
+  .captcha-cell {
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background-size: 400% 300%;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s;
+  }
+
+  .captcha-cell.selected::after {
+    content: '✓';
+    position: absolute; inset: 0;
+    background: rgba(77,159,255,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; color: white;
+    font-weight: 900; text-shadow: 0 0 8px rgba(0,0,0,0.5);
+  }
+
+  .captcha-cell:active { opacity: 0.85; }
+
+  /* placeholder quando nessuna immagine è caricata */
+  .captcha-cell.no-img {
+    background-color: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .captcha-cell.no-img .cell-placeholder {
+    font-family: var(--mono); font-size: 9px; color: var(--muted);
+    text-align: center; line-height: 1.4; padding: 4px;
+    pointer-events: none;
+  }
+
+  .captcha-bottom {
+    padding: 0.85rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .captcha-refresh {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 12px; color: var(--muted); font-family: var(--mono);
+    font-size: 10px; cursor: pointer; letter-spacing: 0.05em;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .captcha-refresh:hover { border-color: var(--blue); color: var(--blue); }
+
+  .captcha-msg {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .captcha-msg.err { color: var(--red); }
+  .captcha-msg.ok { color: var(--green); }
+
+  /* UPLOAD CONTROLS (admin) */
+  .upload-section {
+    margin: 1rem 1.5rem 0;
+    background: var(--surface2); border: 1px dashed rgba(192,132,252,0.3);
+    border-radius: 14px; padding: 1rem 1.25rem;
+  }
+  .upload-title {
+    font-family: var(--mono); font-size: 10px; color: var(--purple);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem;
+  }
+  .upload-row { display: flex; flex-direction: column; gap: 8px; }
+
+  .upload-label {
+    font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 3px;
+    font-family: var(--mono);
+  }
+
+  .upload-input-wrap {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .upload-btn {
+    flex-shrink: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 14px;
+    font-family: var(--mono); font-size: 11px; color: var(--purple);
+    cursor: pointer; letter-spacing: 0.04em;
+    transition: border-color 0.15s;
+  }
+  .upload-btn:hover { border-color: var(--purple); }
+
+  .upload-filename {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .upload-hint {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    margin-top: 6px; line-height: 1.6;
+  }
+
+  .captcha-text-input {
+    width: 100%; margin-top: 6px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; color: var(--text);
+    font-family: var(--mono); font-size: 12px;
+    outline: none; transition: border-color 0.15s;
+  }
+  .captcha-text-input:focus { border-color: var(--purple); }
+  .captcha-text-input::placeholder { color: var(--muted); }
+
+  .apply-btn {
+    width: 100%; margin-top: 10px;
+    padding: 8px; background: rgba(192,132,252,0.15);
+    border: 1px solid rgba(192,132,252,0.35);
+    border-radius: 8px; color: var(--purple);
+    font-family: var(--mono); font-size: 11px;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: background 0.15s;
+  }
+  .apply-btn:hover { background: rgba(192,132,252,0.25); }
+
+  /* CTA */
+  .cta-wrap { margin: 1.5rem 1.5rem 0; }
+  .cta-btn {
+    width: 100%; padding: 1.1rem;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 16px;
+    font-family: var(--display); font-size: 22px;
+    cursor: pointer; box-shadow: 0 5px 0 var(--blue-dim);
+    transition: transform 0.12s, box-shadow 0.12s;
+    position: relative; overflow: hidden;
+  }
+  .cta-btn::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 60%);
+    pointer-events:none;
+  }
+  .cta-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--blue-dim); }
+  .cta-btn:disabled {
+    background: var(--muted); box-shadow: 0 5px 0 #4a3a6a;
+    cursor: not-allowed; opacity: 0.6;
+  }
+  .cta-sub {
+    text-align: center; font-family: var(--mono); font-size: 10px;
+    color: var(--muted); margin-top: 10px; letter-spacing: 0.04em;
+  }
+
+  .footer {
+    margin-top: 2.5rem; text-align: center;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); padding: 0 1.5rem; opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="status-chip">QUIZ COMPLETATO · ANALISI IN CORSO</div>
+    <span class="hero-emoji" id="hero-emoji">🎯</span>
+    <h1 class="title" id="main-title">Risultato <span class="hi2">finale!</span></h1>
+    <p class="subtitle" id="main-sub">// elaborazione punteggio...</p>
+  </header>
+
+  <div class="terminal-strip">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="terminal-label">risultato.sh · calcolo premio</span>
+    </div>
+    <div class="terminal-body" id="term-body">
+      <div><span class="t-dim">caricamento...</span></div>
+    </div>
+  </div>
+
+  <!-- PUNTEGGIO -->
+  <div class="score-card">
+    <div class="score-top"><span>PUNTEGGIO</span> · riepilogo finale</div>
+    <div class="score-grid">
+      <div class="score-stat">
+        <div class="score-num green" id="stat-right">-</div>
+        <div class="score-lbl">GIUSTE</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-num red" id="stat-wrong">-</div>
+        <div class="score-lbl">SBAGLIATE</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-num blue" id="stat-pct">-</div>
+        <div class="score-lbl">SCORE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESITO -->
+  <div class="section-header">
+    <span>📊</span>
+    <span class="section-label">Come è andata</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="esito-card">
+    <div class="esito-top"><span>ESITO</span> · analisi risultato</div>
+    <div class="esito-body">
+
+      <!-- FASCIA 0–3 -->
+      <div class="esito-tier" id="tier-low">
+        <div class="esito-emoji-big">💀</div>
+        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi bassi (0-3) -->
+        <div class="esito-text">
+          <span class="acc-red">Zero preparazione.</span><br>
+          Scrivi qui la tua battuta<br>per chi ha fatto schifo!
+        </div>
+        <div class="esito-sub">// sottotitolo opzionale per punteggio basso — modifica o rimuovi</div>
+        <div class="prize-reveal">
+          <div class="prize-icon">🎁</div>
+          <div>
+            <div class="prize-label">// PREMIO OTTENUTO</div>
+            <div class="prize-val" id="prize-low">Buono €X</div>
+            <div class="prize-sub">Modifica il valore sopra</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASCIA 4–6 -->
+      <div class="esito-tier" id="tier-mid">
+        <div class="esito-emoji-big">😅</div>
+        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi medi (4-6) -->
+        <div class="esito-text">
+          <span class="acc-yellow">Così così...</span><br>
+          Scrivi qui la tua battuta<br>per chi ha fatto abbastanza!
+        </div>
+        <div class="esito-sub">// sottotitolo opzionale per punteggio medio — modifica o rimuovi</div>
+        <div class="prize-reveal">
+          <div class="prize-icon">🎁</div>
+          <div>
+            <div class="prize-label">// PREMIO OTTENUTO</div>
+            <div class="prize-val" id="prize-mid">Buono €Y</div>
+            <div class="prize-sub">Modifica il valore sopra</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASCIA 7–9 -->
+      <div class="esito-tier" id="tier-high">
+        <div class="esito-emoji-big">🔥</div>
+        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggi alti (7-9) -->
+        <div class="esito-text">
+          <span class="acc-blue">Ottimo lavoro!</span><br>
+          Scrivi qui la tua battuta<br>per chi ha fatto bene!
+        </div>
+        <div class="esito-sub">// sottotitolo opzionale per punteggio alto — modifica o rimuovi</div>
+        <div class="prize-reveal">
+          <div class="prize-icon">🎁</div>
+          <div>
+            <div class="prize-label">// PREMIO OTTENUTO</div>
+            <div class="prize-val" id="prize-high">Buono €Z</div>
+            <div class="prize-sub">Modifica il valore sopra</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASCIA 10/10 -->
+      <div class="esito-tier" id="tier-perfect">
+        <div class="esito-emoji-big">🏆</div>
+        <!-- ✏️ SEGNAPOSTO: modifica il testo qui sotto per punteggio perfetto (10/10) -->
+        <div class="esito-text">
+          <span class="acc-yellow">PERFETTO!</span><br>
+          Scrivi qui la tua battuta<br>per il punteggio pieno!
+        </div>
+        <div class="esito-sub">// sottotitolo opzionale per punteggio perfetto — modifica o rimuovi</div>
+        <div class="prize-reveal">
+          <div class="prize-icon">🎁</div>
+          <div>
+            <div class="prize-label">// PREMIO OTTENUTO</div>
+            <div class="prize-val" id="prize-perfect">Buono €W</div>
+            <div class="prize-sub">Modifica il valore sopra</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CAPTCHA -->
+  <div class="section-header">
+    <span>🤖</span>
+    <span class="section-label">Verifica anti-bot</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="captcha-section">
+    <div class="captcha-top">
+      <div class="captcha-top-left">
+        <div class="captcha-logo">rC</div>
+        <span class="captcha-brand">r<span>CAPTCHA</span> v3</span>
+      </div>
+    </div>
+    <div class="captcha-instruction">
+      Seleziona tutti i riquadri con<br>
+      <span id="captcha-subject">"..."</span>
+    </div>
+    <div class="captcha-grid" id="captcha-grid">
+      <!-- celle generate da JS -->
+    </div>
+    <div class="captcha-bottom">
+      <button class="captcha-refresh" onclick="resetCaptcha()">↻ Nuovo</button>
+      <span class="captcha-msg" id="captcha-msg">seleziona i riquadri corretti</span>
+    </div>
+  </div>
+
+  <!-- SEZIONE CARICAMENTO IMMAGINE + TESTO CAPTCHA (per chi prepara il sito) -->
+  <div class="upload-section">
+    <div class="upload-title">⚙ Configura captcha · solo per te</div>
+    <div class="upload-row">
+
+      <div>
+        <div class="upload-label">// immagine captcha</div>
+        <div class="upload-input-wrap">
+          <label class="upload-btn" for="img-upload">📁 Carica foto</label>
+          <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="loadCaptchaImage(event)">
+          <span class="upload-filename" id="upload-filename">nessun file scelto</span>
+        </div>
+        <div class="upload-hint">
+          // usa una foto del laureato o immagine divertente<br>
+          // verrà divisa in 12 celle (4 colonne × 3 righe)
+        </div>
+      </div>
+
+      <div>
+        <div class="upload-label">// testo istruzione captcha</div>
+        <input type="text" class="captcha-text-input" id="captcha-text-input"
+               placeholder='es: "la faccia quando ha passato l\'esame"' maxlength="80">
+        <div class="upload-hint">// questo testo appare sopra la griglia</div>
+      </div>
+
+      <div>
+        <div class="upload-label">// celle corrette (1-12, separate da virgola)</div>
+        <input type="text" class="captcha-text-input" id="captcha-cells-input"
+               placeholder='es: 1,3,7,10' maxlength="30">
+        <div class="upload-hint">// celle numerate sinistra→destra, alto→basso · griglia 4×3</div>
+      </div>
+
+      <button class="apply-btn" onclick="applyCaptchaConfig()">✓ Applica configurazione</button>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <button class="cta-btn" id="cta-btn" onclick="claimPrize()" disabled>
+      Ottieni il buono! 🎁
+    </button>
+    <p class="cta-sub" id="cta-sub">// risolvi prima il captcha</p>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 · fatto con ❤️ per il laureato in Ingegneria Informatica
+  </footer>
+</div>
+
+<script>
+// ─── STATO ────────────────────────────────────────────────
+let captchaImage = null;
+let correctCells = new Set([1, 5, 9]); // default — cambia con il pannello (celle 1-12)
+let selectedCells = new Set();
+let captchaSubject = '"..."';
+let captchaSolved = false;
+
+// ─── PUNTEGGIO DA URL ──────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const right = parseInt(params.get('right') || '0');
+const wrong = parseInt(params.get('wrong') || '0');
+const total = right + wrong || 10;
+const pct = Math.round((right / total) * 100);
+
+// Aggiorna statistiche
+document.getElementById('stat-right').textContent = right;
+document.getElementById('stat-wrong').textContent = wrong;
+document.getElementById('stat-pct').textContent = pct + '%';
+
+// Terminale
+document.getElementById('term-body').innerHTML = `
+  <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">./calcola_premio.sh --right=${right} --total=${total}</span></div>
+  <div><span class="t-dim">Risposte corrette: </span><span class="t-ok">${right}/${total}</span></div>
+  <div><span class="t-dim">Percentuale: </span><span class="t-warn">${pct}%</span></div>
+  <div><span class="t-dim">Premio assegnato: </span><span class="t-blue">IN CALCOLO...</span></div>
+  <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
+`;
+
+// Mostra fascia corretta
+function showTier() {
+  ['tier-low','tier-mid','tier-high','tier-perfect'].forEach(id =>
+    document.getElementById(id).classList.remove('active')
+  );
+  let tier;
+  if (right === 10)       tier = 'tier-perfect';
+  else if (right >= 7)    tier = 'tier-high';
+  else if (right >= 4)    tier = 'tier-mid';
+  else                    tier = 'tier-low';
+  document.getElementById(tier).classList.add('active');
+}
+showTier();
+
+// ─── CAPTCHA ────────────────────────────────────────────────
+function buildGrid() {
+  const grid = document.getElementById('captcha-grid');
+  grid.innerHTML = '';
+  selectedCells.clear();
+  captchaSolved = false;
+  updateCaptchaMsg('seleziona i riquadri corretti', '');
+  document.getElementById('cta-btn').disabled = true;
+  document.getElementById('cta-sub').textContent = '// risolvi prima il captcha';
+
+  for (let i = 1; i <= 12; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'captcha-cell' + (captchaImage ? '' : ' no-img');
+    cell.dataset.idx = i;
+
+    if (captchaImage) {
+      const col = (i - 1) % 4;          // 4 colonne
+      const row = Math.floor((i - 1) / 4); // 3 righe
+      cell.style.backgroundImage = `url(${captchaImage})`;
+      cell.style.backgroundSize = '400% 300%';
+      cell.style.backgroundPosition = `${col * (100/3)}% ${row * 50}%`;
+    } else {
+      cell.innerHTML = `<span class="cell-placeholder">${i}</span>`;
+    }
+
+    cell.addEventListener('click', () => toggleCell(cell, i));
+    grid.appendChild(cell);
+  }
+
+  document.getElementById('captcha-subject').textContent = captchaSubject;
+}
+
+function toggleCell(cell, idx) {
+  if (captchaSolved) return;
+  if (selectedCells.has(idx)) {
+    selectedCells.delete(idx);
+    cell.classList.remove('selected');
+  } else {
+    selectedCells.add(idx);
+    cell.classList.add('selected');
+  }
+  checkCaptcha();
+}
+
+function checkCaptcha() {
+  const sel = [...selectedCells].sort().join(',');
+  const cor = [...correctCells].sort().join(',');
+  if (sel === cor) {
+    captchaSolved = true;
+    updateCaptchaMsg('✓ verifica superata!', 'ok');
+    document.getElementById('cta-btn').disabled = false;
+    document.getElementById('cta-sub').textContent = '// captcha risolto · clicca per ottenere il buono';
+  } else if (selectedCells.size > 0) {
+    updateCaptchaMsg('continua a selezionare...', '');
+  } else {
+    updateCaptchaMsg('seleziona i riquadri corretti', '');
+  }
+}
+
+function updateCaptchaMsg(text, type) {
+  const el = document.getElementById('captcha-msg');
+  el.textContent = text;
+  el.className = 'captcha-msg' + (type ? ' ' + type : '');
+}
+
+function resetCaptcha() {
+  buildGrid();
+}
+
+// ─── CONFIGURAZIONE CAPTCHA ────────────────────────────────
+function loadCaptchaImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('upload-filename').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    captchaImage = e.target.result;
+    buildGrid();
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyCaptchaConfig() {
+  const txt = document.getElementById('captcha-text-input').value.trim();
+  const cells = document.getElementById('captcha-cells-input').value.trim();
+
+  if (txt) captchaSubject = `"${txt}"`;
+
+  if (cells) {
+    const parsed = cells.split(',')
+      .map(s => parseInt(s.trim()))
+      .filter(n => n >= 1 && n <= 12);
+    if (parsed.length > 0) correctCells = new Set(parsed);
+  }
+
+  buildGrid();
+}
+
+function claimPrize() {
+  if (!captchaSolved) return;
+  alert('🎁 Hai superato il captcha! Parla con chi ti ha mandato il link per ritirare il tuo buono.');
+}
+
+// ─── INIT ──────────────────────────────────────────────────
+buildGrid();
+</script>
+</body>
+</html>
