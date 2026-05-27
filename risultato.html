@@ -586,12 +586,17 @@ function showTier() {
 showTier();
 
 // ─── IMMAGINE ESITO ────────────────────────────────────────
-if (ESITO_IMAGE) {
-  document.querySelectorAll('.esito-img').forEach(el => {
-    el.src = ESITO_IMAGE;
-    el.style.display = 'block';
-  });
-}
+const esito_map = {
+  'tier-low':     ESITO_LOW,
+  'tier-mid':     ESITO_MID,
+  'tier-high':    ESITO_HIGH,
+  'tier-perfect': ESITO_PERFECT,
+};
+Object.entries(esito_map).forEach(([tierId, imgFile]) => {
+  if (!imgFile) return;
+  const img = document.querySelector(`#${tierId} .esito-img`);
+  if (img) { img.src = imgFile; img.style.display = 'block'; }
+});
 
 // ─── CAPTCHA ────────────────────────────────────────────────
 function buildGrid() {
