@@ -519,7 +519,7 @@
   </div>
 
   <footer class="footer">
-    &copy; 2025 · fatto con ❤️ per il laureato in Ingegneria Informatica
+    &copy; 2026 · fatto con ❤️ per il laureato in Ingegneria Informatica
   </footer>
 </div>
 
@@ -529,16 +529,19 @@
 // ═══════════════════════════════════════════════════════════
 
 // Immagine captcha: metti il nome del file nella stessa cartella
-const CAPTCHA_IMAGE = 'captcha.jpg'; // ← CAMBIA QUI
+const CAPTCHA_IMAGE = 'captchagay.jpg'; // ← CAMBIA QUI
 
 // Testo istruzione captcha
-const CAPTCHA_SUBJECT = '"la tua descrizione"'; // ← CAMBIA QUI
+const CAPTCHA_SUBJECT = '""'; // ← CAMBIA QUI
 
 // Celle corrette del captcha (1-12, griglia 4×3 sinistra→destra, alto→basso)
-const CORRECT_CELLS = new Set([2, 6, 7, 10]); // ← CAMBIA QUI
+const CORRECT_CELLS = new Set([5, 6, 7, 8, 9, 10, 11, 12]); // ← CAMBIA QUI
 
 // Immagine nell'esito (stessa cartella) — lascia '' per non mostrarne una
-const ESITO_IMAGE = 'esito.jpg'; // ← CAMBIA QUI (o metti '' per nasconderla)
+const ESITO_LOW     = 'esito-low.jpg';     // ← foto per 0-1 risposte giuste
+const ESITO_MID     = 'esito-mid.jpg';     // ← foto per 2-3 risposte giuste
+const ESITO_HIGH    = 'esito-high.jpg';    // ← foto per 4 risposte giuste
+const ESITO_PERFECT = 'esito-perfect.jpg'; // ← foto per 5/5
 
 // ═══════════════════════════════════════════════════════════
 
