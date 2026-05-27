@@ -443,41 +443,6 @@ const QUESTIONS = [
   {
     q: "📝 DOMANDA 5 — Sostituisci con la tua domanda qui",
     answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
-    correct: 3,
-    feedback_ok: "Esatto! 🎉",
-    feedback_ko: "Peccato! La risposta giusta era la D."
-  },
-  {
-    q: "📝 DOMANDA 6 — Sostituisci con la tua domanda qui",
-    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
-    correct: 1,
-    feedback_ok: "Esatto! 🎉",
-    feedback_ko: "Peccato! La risposta giusta era la B."
-  },
-  {
-    q: "📝 DOMANDA 7 — Sostituisci con la tua domanda qui",
-    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
-    correct: 2,
-    feedback_ok: "Esatto! 🎉",
-    feedback_ko: "Peccato! La risposta giusta era la C."
-  },
-  {
-    q: "📝 DOMANDA 8 — Sostituisci con la tua domanda qui",
-    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
-    correct: 0,
-    feedback_ok: "Esatto! 🎉",
-    feedback_ko: "Peccato! La risposta giusta era la A."
-  },
-  {
-    q: "📝 DOMANDA 9 — Sostituisci con la tua domanda qui",
-    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
-    correct: 3,
-    feedback_ok: "Esatto! 🎉",
-    feedback_ko: "Peccato! La risposta giusta era la D."
-  },
-  {
-    q: "📝 DOMANDA 10 — Sostituisci con la tua domanda qui",
-    answers: ["Risposta A", "Risposta B", "Risposta C", "Risposta D"],
     correct: 1,
     feedback_ok: "Esatto! 🎉 Ultima domanda — ce l'hai fatta!",
     feedback_ko: "Peccato! La risposta giusta era la B. Vediamo comunque cosa hai vinto..."
@@ -495,15 +460,15 @@ function renderQuestion() {
   const q = QUESTIONS[current];
   const n = current + 1;
 
-  document.getElementById('top-label').textContent = `DOM. ${n}/10`;
-  document.getElementById('progress-fill').style.width = `${(n / 10) * 100}%`;
+  document.getElementById('top-label').textContent = `DOM. ${n}/5`;
+  document.getElementById('progress-fill').style.width = `${(n / 5) * 100}%`;
   document.getElementById('score-right').textContent = `✓${right}`;
   document.getElementById('score-wrong').textContent = `✗${wrong}`;
   document.getElementById('q-badge').textContent = `DOMANDA ${String(n).padStart(2,'0')}`;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('term-title').textContent = `quiz.sh · domanda ${n}`;
   document.getElementById('term-body').innerHTML = `
-    <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=${n} --total=10</span></div>
+    <div><span class="t-prompt">~/quiz $ </span><span class="t-cmd">load_question --n=${n} --total=5</span></div>
     <div><span class="t-dim">Stato: </span><span class="t-q">IN CORSO</span><span class="t-dim"> · Punteggio: </span><span style="color:var(--yellow)">${right}/${current}</span></div>
     <div><span class="t-prompt">~/quiz $ </span><span class="cursor"></span></div>
   `;
@@ -524,7 +489,7 @@ function renderQuestion() {
   document.getElementById('next-wrap').classList.remove('visible');
 
   const nextBtn = document.getElementById('next-btn');
-  nextBtn.textContent = current < 9 ? 'Prossima domanda →' : 'Vedi il tuo premio! 🎁';
+  nextBtn.textContent = current < 4 ? 'Prossima domanda →' : 'Vedi il tuo premio! 🎁';
 }
 
 function selectAnswer(idx) {
