@@ -659,10 +659,11 @@ function claimPrize() {
   alert('🎁 Hai superato il captcha! Parla con chi ti ha mandato il link per ritirare il tuo buono.');
 }
 
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const _preload = new Image();
   _preload.onload = () => buildGrid();
   _preload.src = CAPTCHA_IMAGE;
+});
 </script>
 </body>
 </html>
