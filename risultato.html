@@ -659,7 +659,10 @@ function claimPrize() {
   alert('🎁 Hai superato il captcha! Parla con chi ti ha mandato il link per ritirare il tuo buono.');
 }
 
-buildGrid();
+const _img = new Image();
+_img.onload = () => buildGrid();
+_img.onerror = () => buildGrid(); // costruisce comunque se l'immagine non esiste
+_img.src = CAPTCHA_IMAGE;
 </script>
 </body>
 </html>
