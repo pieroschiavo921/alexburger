@@ -559,42 +559,6 @@
     </div>
   </div>
 
-  <!-- SEZIONE CARICAMENTO IMMAGINE + TESTO CAPTCHA (per chi prepara il sito) -->
-  <div class="upload-section">
-    <div class="upload-title">⚙ Configura captcha · solo per te</div>
-    <div class="upload-row">
-
-      <div>
-        <div class="upload-label">// immagine captcha</div>
-        <div class="upload-input-wrap">
-          <label class="upload-btn" for="img-upload">📁 Carica foto</label>
-          <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="loadCaptchaImage(event)">
-          <span class="upload-filename" id="upload-filename">nessun file scelto</span>
-        </div>
-        <div class="upload-hint">
-          // usa una foto del laureato o immagine divertente<br>
-          // verrà divisa in 12 celle (4 colonne × 3 righe)
-        </div>
-      </div>
-
-      <div>
-        <div class="upload-label">// testo istruzione captcha</div>
-        <input type="text" class="captcha-text-input" id="captcha-text-input"
-               placeholder='es: "la faccia quando ha passato l\'esame"' maxlength="80">
-        <div class="upload-hint">// questo testo appare sopra la griglia</div>
-      </div>
-
-      <div>
-        <div class="upload-label">// celle corrette (1-12, separate da virgola)</div>
-        <input type="text" class="captcha-text-input" id="captcha-cells-input"
-               placeholder='es: 1,3,7,10' maxlength="30">
-        <div class="upload-hint">// celle numerate sinistra→destra, alto→basso · griglia 4×3</div>
-      </div>
-
-      <button class="apply-btn" onclick="applyCaptchaConfig()">✓ Applica configurazione</button>
-    </div>
-  </div>
-
   <div class="cta-wrap">
     <button class="cta-btn" id="cta-btn" onclick="claimPrize()" disabled>
       Ottieni il buono! 🎁
@@ -603,7 +567,7 @@
   </div>
 
   <footer class="footer">
-    &copy; 2025 · fatto con ❤️ per il laureato in Ingegneria Informatica
+    &copy; 2026 · fatto con ❤️ per il laureato in Ingegneria Informatica
   </footer>
 </div>
 
@@ -709,44 +673,11 @@ function checkCaptcha() {
   }
 }
 
-function updateCaptchaMsg(text, type) {
-  const el = document.getElementById('captcha-msg');
-  el.textContent = text;
-  el.className = 'captcha-msg' + (type ? ' ' + type : '');
-}
 
 function resetCaptcha() {
   buildGrid();
 }
 
-// ─── CONFIGURAZIONE CAPTCHA ────────────────────────────────
-function loadCaptchaImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('upload-filename').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    captchaImage = e.target.result;
-    buildGrid();
-  };
-  reader.readAsDataURL(file);
-}
-
-function applyCaptchaConfig() {
-  const txt = document.getElementById('captcha-text-input').value.trim();
-  const cells = document.getElementById('captcha-cells-input').value.trim();
-
-  if (txt) captchaSubject = `"${txt}"`;
-
-  if (cells) {
-    const parsed = cells.split(',')
-      .map(s => parseInt(s.trim()))
-      .filter(n => n >= 1 && n <= 12);
-    if (parsed.length > 0) correctCells = new Set(parsed);
-  }
-
-  buildGrid();
-}
 
 function claimPrize() {
   if (!captchaSolved) return;
