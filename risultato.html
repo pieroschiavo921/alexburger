@@ -661,7 +661,7 @@ function resetCaptcha() { buildGrid(); }
 
 function claimPrize() {
   if (!captchaSolved) return;
-  alert('🎁 Hai superato il captcha! Parla con chi ti ha mandato il link per ritirare il tuo buono.');
+  window.location.href = `buono.html`;
 }
 
 const _preload = new Image();
